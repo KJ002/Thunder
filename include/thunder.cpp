@@ -1,6 +1,6 @@
 #include "thunder.hpp"
 
-#include <bits/types/time_t.h>
+#include <cmath>
 #include <vector>
 #include <chrono>
 
@@ -8,9 +8,10 @@
 
 /* PhysicsBodyRec */
 
-PhysicsBodyRec::PhysicsBodyRec(PhysicsEnvironment* env, Vec2 position, Vec2 velocity){
+PhysicsBodyRec::PhysicsBodyRec(PhysicsEnvironment* env, Vec2 position, Vec2 velocity, double mass){
   this->position = position;
   this->velocity = velocity;
+  this->mass = mass;
   env->objects.push_back(this);
 }
 
@@ -23,6 +24,13 @@ void PhysicsBodyRec::update(){
 
   this->lastUpdate.time = time_now();
   this->lastUpdate.isSet = true;
+}
+
+void PhysicsBodyRec::applyForce(Vec2 force){
+  Vec2 result = {std::sqrt((force.x*2)/this->mass), std::sqrt((force.y*2)/this->mass)};
+
+  this->velocity.x += result.x;
+  this->velocity.y += result.y;
 }
 
 /* PhysicsEnvironment */

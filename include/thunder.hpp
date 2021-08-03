@@ -8,8 +8,12 @@ class PhysicsEnvironment;
 class PhysicsBodyRec;
 
 struct Vec2{
-  float x;
-  float y;
+  double x;
+  double y;
+};
+
+struct Vec3 : public Vec2{
+  double z;
 };
 
 struct time_point{
@@ -23,9 +27,11 @@ public:
 
   Vec2 position;
   Vec2 velocity;
+  double mass;
 
-  PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2);
+  PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2, double);
   void update();
+  void applyForce(Vec2);
 };
 
 class PhysicsEnvironment{
