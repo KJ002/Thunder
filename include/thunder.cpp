@@ -8,18 +8,25 @@
 
 /* PhysicsBodyRec */
 
-PhysicsBodyRec::PhysicsBodyRec(PhysicsEnvironment* env, Vec2 position, Vec2 velocity, double mass){
+PhysicsBodyRec::PhysicsBodyRec(PhysicsEnvironment* env, Vec2 position, Vec2 velocity,
+                               double mass, double rotation, double angularVelocity){
   this->position = position;
   this->velocity = velocity;
   this->mass = mass;
+  this->rotation = rotation;
+  this->angularVelocity = angularVelocity;
+
   env->objects.push_back(this);
 }
 
 void PhysicsBodyRec::update(){
   if (lastUpdate.isSet){
     std::chrono::duration<double> dur = time_now() - this->lastUpdate.time;
+
     this->position.x += this->velocity.x * dur.count();
     this->position.y += this->velocity.y * dur.count();
+
+    this->rotation += this->angularVelocity * dur.count();
   }
 
   this->lastUpdate.time = time_now();

@@ -28,8 +28,10 @@ public:
   Vec2 position;
   Vec2 velocity;
   double mass;
+  double rotation;
+  double angularVelocity;
 
-  PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2, double);
+  PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2, double, double, double);
   void update();
   void applyForce(Vec2);
 };
