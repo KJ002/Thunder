@@ -42,7 +42,7 @@ public:
   PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2, double, double, double);
   void update();
   void update(double, double, unsigned int);
-  void applyForce(Vec2);
+  void applyEnergy(Vec2);
 };
 
 class PhysicsEnvironment{

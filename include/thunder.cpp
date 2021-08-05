@@ -39,7 +39,7 @@ void PhysicsBodyRec::update(double gravity, double weight, unsigned int pixelMul
   this->pixelMultiplier = pixelMultiplyer;
 }
 
-void PhysicsBodyRec::applyForce(Vec2 force){
+void PhysicsBodyRec::applyEnergy(Vec2 force){
   Vec2 result = {std::sqrt((force.x*2)/this->mass), std::sqrt((force.y*2)/this->mass)};
 
   this->velocity.x += result.x;
