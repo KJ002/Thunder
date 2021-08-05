@@ -24,7 +24,7 @@ void PhysicsBodyRec::update(){
     std::chrono::duration<double> dur = time_now() - this->lastUpdate.time;
 
     this->position.x += this->velocity.x * dur.count();
-    this->position.y += this->velocity.y * dur.count();
+    this->position.y += (this->velocity.y + this->gravity) * dur.count();
 
     this->rotation += this->angularVelocity * dur.count();
   }
