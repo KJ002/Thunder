@@ -10,6 +10,8 @@ int main(){
   PhysicsBodyRec testPhysicsBody(&env, (Vec2){190, 200}, (Vec2){0, 0}, 10, 0, 360);
   Rectangle testRenderBody = {(float)testPhysicsBody.position.x, (float)testPhysicsBody.position.y, 20, 20};
 
+  env.setup();
+
   /* Window Setup */
 
   const int screenWidth = 800;
