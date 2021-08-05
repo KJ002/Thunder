@@ -25,14 +25,22 @@ class PhysicsBodyRec{
 public:
   time_point lastUpdate;
 
+  /* Member Variables Passed On Construction */
+
   Vec2 position;
   Vec2 velocity;
   double mass;
   double rotation;
   double angularVelocity;
 
+  /* Member Variabes Passed By Environment */
+
+  double gravity;
+  double weight;
+
   PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2, double, double, double);
   void update();
+  void update(double, double);
   void applyForce(Vec2);
 };
 
@@ -43,5 +51,6 @@ public:
   std::vector<PhysicsBodyRec*> objects;
 
   PhysicsEnvironment(float);
+  void setup();
   void update();
 };

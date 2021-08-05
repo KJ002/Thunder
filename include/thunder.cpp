@@ -33,6 +33,11 @@ void PhysicsBodyRec::update(){
   this->lastUpdate.isSet = true;
 }
 
+void PhysicsBodyRec::update(double gravity, double weight){
+  this->gravity = gravity;
+  this->weight = weight;
+}
+
 void PhysicsBodyRec::applyForce(Vec2 force){
   Vec2 result = {std::sqrt((force.x*2)/this->mass), std::sqrt((force.y*2)/this->mass)};
 
@@ -49,4 +54,12 @@ PhysicsEnvironment::PhysicsEnvironment(float gravity){
 void PhysicsEnvironment::update(){
   for (auto i : this->objects)
     i->update();
+}
+
+void PhysicsEnvironment::setup(){
+  for (auto i : this->objects){
+    double weight = i->mass * this->gravity;
+
+    i->update(this->gravity, weight);
+  }
 }
