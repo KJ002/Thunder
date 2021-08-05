@@ -7,7 +7,7 @@ int main(){
 
   PhysicsEnvironment env(9.8);
 
-  PhysicsBodyRec testPhysicsBody(&env, (Vec2){190, 200}, (Vec2){0, 0}, 10, 0, 360);
+  PhysicsBodyRec testPhysicsBody(&env, (Vec2){190, 200}, (Vec2){0, 0}, 10, 0, 0);
   Rectangle testRenderBody = {(float)testPhysicsBody.position.x, (float)testPhysicsBody.position.y, 20, 20};
 
   env.setup();
@@ -22,8 +22,6 @@ int main(){
   SetTargetFPS(60);
 
   /* Test Linear Velocity */
-
-  testPhysicsBody.applyForce((Vec2){0, 9.8});
 
   while (!WindowShouldClose()){
 
