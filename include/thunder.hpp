@@ -37,16 +37,18 @@ public:
 
   double gravity;
   double weight;
+  unsigned int pixelMultiplier;
 
   PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2, double, double, double);
   void update();
-  void update(double, double);
+  void update(double, double, unsigned int);
   void applyForce(Vec2);
 };
 
 class PhysicsEnvironment{
 public:
   float gravity;
+  unsigned int pixelMultiplier = 10;
 
   std::vector<PhysicsBodyRec*> objects;
 

@@ -23,8 +23,8 @@ void PhysicsBodyRec::update(){
   if (lastUpdate.isSet){
     std::chrono::duration<double> dur = time_now() - this->lastUpdate.time;
 
-    this->position.x += this->velocity.x * dur.count();
-    this->position.y += (this->velocity.y + this->gravity) * dur.count();
+    this->position.x += (this->velocity.x*this->pixelMultiplier) * dur.count();
+    this->position.y += (this->velocity.y + this->gravity) * this->pixelMultiplier * dur.count();
 
     this->rotation += this->angularVelocity * dur.count();
   }
@@ -33,9 +33,10 @@ void PhysicsBodyRec::update(){
   this->lastUpdate.isSet = true;
 }
 
-void PhysicsBodyRec::update(double gravity, double weight){
+void PhysicsBodyRec::update(double gravity, double weight, unsigned int pixelMultiplyer){
   this->gravity = gravity;
   this->weight = weight;
+  this->pixelMultiplier = pixelMultiplyer;
 }
 
 void PhysicsBodyRec::applyForce(Vec2 force){
@@ -60,6 +61,6 @@ void PhysicsEnvironment::setup(){
   for (auto i : this->objects){
     double weight = i->mass * this->gravity;
 
-    i->update(this->gravity, weight);
+    i->update(this->gravity, weight, this->pixelMultiplier);
   }
 }
