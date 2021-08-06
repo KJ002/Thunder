@@ -8,13 +8,22 @@
 
 /* PhysicsBodyRec */
 
-PhysicsBodyRec::PhysicsBodyRec(PhysicsEnvironment* env, Vec2 position, Vec2 velocity,
+PhysicsBodyRec::PhysicsBodyRec(PhysicsEnvironment* env, Vec2 dimentions, Vec2 position, Vec2 velocity,
                                double mass, double rotation, double angularVelocity){
+
+  this->dimentions = dimentions;
   this->position = position;
   this->velocity = velocity;
   this->mass = mass;
   this->rotation = rotation;
   this->angularVelocity = angularVelocity;
+
+  // Calculate Vertices
+
+  this->vertices[0] = (Vec2){position.x-(dimentions.x/2), position.y-(dimentions.y/2)};
+  this->vertices[1] = (Vec2){position.x+(dimentions.x/2), position.y-(dimentions.y/2)};
+  this->vertices[2] = (Vec2){position.x+(dimentions.x/2), position.y+(dimentions.y/2)};
+  this->vertices[3] = (Vec2){position.x-(dimentions.x/2), position.y+(dimentions.y/2)};
 
   env->objects.push_back(this);
 }
@@ -62,5 +71,49 @@ void PhysicsEnvironment::setup(){
     double weight = i->mass * this->gravity;
 
     i->update(this->gravity, weight, this->pixelMultiplier);
+  }
+}
+
+void PhysicsEnvironment::checkCollisions(){
+  for (int selectedObj = 0; selectedObj < this->objects.size(); selectedObj++){
+    std::vector<PhysicsBodyRec*> collidingObjects;
+
+    for (int selectedVert = 0; selectedVert < 4; selectedVert++){
+
+      int intersections = 0;
+      double selectedX = this->objects[selectedObj]->vertices[selectedVert].x;
+
+      for (int comparisonObj = 0; comparisonObj < this->objects.size()-1; comparisonObj++){
+
+        bool possibleCollisionIsSet = false;
+
+        int correctComparisonObj;
+        if (comparisonObj == selectedObj)
+          correctComparisonObj = (comparisonObj+1)%this->objects.size()-1;
+        else
+          correctComparisonObj = comparisonObj;
+
+        for (int comparisonVert = 0; comparisonVert < 4; comparisonVert++){
+          double comparisonX[2] = {this->objects[correctComparisonObj]->vertices[comparisonVert].x,
+          this->objects[correctComparisonObj]->vertices[(comparisonVert+1)%4].x};
+
+          if ((selectedX >= comparisonX[0] && selectedX <= comparisonX[1]) ||
+              (selectedX <= comparisonX[0] && selectedX >= comparisonX[1])){
+            intersections++;
+
+            if (!possibleCollisionIsSet){
+              possibleCollisionIsSet = true;
+              collidingObjects.push_back(this->objects[correctComparisonObj]);
+            }
+
+          }
+        }
+      }
+
+      if (intersections%2){
+        this->objects[selectedObj]->isColliding = true;
+        this->objects[selectedObj]
+      }
+    }
   }
 }

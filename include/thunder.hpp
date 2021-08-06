@@ -24,14 +24,18 @@ struct time_point{
 class PhysicsBodyRec{
 public:
   time_point lastUpdate;
+  std::vector<PhysicsBodyRec*> collidingObjects;
+  bool isColliding;
 
   /* Member Variables Passed On Construction */
 
+  Vec2 dimentions;
   Vec2 position;
   Vec2 velocity;
   double mass;
   double rotation;
   double angularVelocity;
+  Vec2 vertices[4];
 
   /* Member Variabes Passed By Environment */
 
@@ -39,7 +43,7 @@ public:
   double weight;
   unsigned int pixelMultiplier;
 
-  PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2, double, double, double);
+  PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2, Vec2, double, double, double);
   void update();
   void update(double, double, unsigned int);
   void applyEnergy(Vec2);
@@ -55,4 +59,5 @@ public:
   PhysicsEnvironment(float);
   void setup();
   void update();
+  void checkCollisions();
 };
