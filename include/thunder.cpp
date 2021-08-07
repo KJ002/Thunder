@@ -1,11 +1,21 @@
 #include "thunder.hpp"
 
 #include <cmath>
+#include <iterator>
 #include <vector>
 #include <chrono>
 #include <iostream>
 
 #define time_now std::chrono::system_clock::now
+
+std::vector<unsigned int> range(unsigned int start, unsigned int end){
+  std::vector<unsigned int> result;
+
+  for (unsigned int i = start; i < end; i++)
+    result.push_back(i);
+
+  return result;
+}
 
 /* PhysicsBodyRec */
 
@@ -41,6 +51,14 @@ void PhysicsBodyRec::update(){
 
   this->lastUpdate.time = time_now();
   this->lastUpdate.isSet = true;
+
+  // Calculate Vertices
+
+  this->vertices[0] = (Vec2){position.x-(dimentions.x/2), position.y-(dimentions.y/2)};
+  this->vertices[1] = (Vec2){position.x+(dimentions.x/2), position.y-(dimentions.y/2)};
+  this->vertices[2] = (Vec2){position.x+(dimentions.x/2), position.y+(dimentions.y/2)};
+  this->vertices[3] = (Vec2){position.x-(dimentions.x/2), position.y+(dimentions.y/2)};
+
 }
 
 void PhysicsBodyRec::update(double gravity, double weight, unsigned int pixelMultiplyer){
@@ -77,12 +95,13 @@ void PhysicsEnvironment::setup(){
 
 void PhysicsEnvironment::checkCollisions(){
   for (int selectedObj = 0; selectedObj < this->objects.size(); selectedObj++){
+    this->objects[selectedObj]->isColliding = false;
     std::vector<PhysicsBodyRec*> collidingObjects;
 
     for (int selectedVert = 0; selectedVert < 4; selectedVert++){
 
       int intersections = 0;
-      double selectedX = this->objects[selectedObj]->vertices[selectedVert].x;
+      Vec2 selected = this->objects[selectedObj]->vertices[selectedVert];
 
       for (int comparisonObj = 0; comparisonObj < this->objects.size()-1; comparisonObj++){
 
@@ -95,11 +114,14 @@ void PhysicsEnvironment::checkCollisions(){
           : correctComparisonObj = comparisonObj;
 
         for (int comparisonVert = 0; comparisonVert < 4; comparisonVert++){
-          double comparisonX[2] = {this->objects[correctComparisonObj]->vertices[comparisonVert].x,
-          this->objects[correctComparisonObj]->vertices[(comparisonVert+1)%4].x};
 
-          if ((selectedX >= comparisonX[0] && selectedX <= comparisonX[1]) ||
-              (selectedX <= comparisonX[0] && selectedX >= comparisonX[1])){
+          Vec2 comparison[2] = {this->objects[correctComparisonObj]->vertices[comparisonVert],
+          this->objects[correctComparisonObj]->vertices[(comparisonVert+1)%4]};
+
+          if (((selected.x > comparison[0].x && selected.x < comparison[1].x) ||
+               (selected.x < comparison[0].x && selected.x > comparison[1].x) &&
+              (selected.y < comparison[0].y && selected.y < comparison[1].y))
+          ){
             intersections++;
 
             if (!possibleCollisionIsSet){
@@ -114,6 +136,8 @@ void PhysicsEnvironment::checkCollisions(){
       if (intersections%2){
         this->objects[selectedObj]->isColliding = true;
       }
+
+      std::cout << intersections << std::endl;
     }
   }
 }
