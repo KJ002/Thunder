@@ -3,6 +3,7 @@
 #include <cmath>
 #include <vector>
 #include <chrono>
+#include <iostream>
 
 #define time_now std::chrono::system_clock::now
 
@@ -88,10 +89,10 @@ void PhysicsEnvironment::checkCollisions(){
         bool possibleCollisionIsSet = false;
 
         int correctComparisonObj;
-        if (comparisonObj == selectedObj)
-          correctComparisonObj = (comparisonObj+1)%this->objects.size()-1;
-        else
-          correctComparisonObj = comparisonObj;
+
+        (comparisonObj == selectedObj)
+          ? correctComparisonObj = (comparisonObj+1)%this->objects.size()
+          : correctComparisonObj = comparisonObj;
 
         for (int comparisonVert = 0; comparisonVert < 4; comparisonVert++){
           double comparisonX[2] = {this->objects[correctComparisonObj]->vertices[comparisonVert].x,
@@ -112,7 +113,6 @@ void PhysicsEnvironment::checkCollisions(){
 
       if (intersections%2){
         this->objects[selectedObj]->isColliding = true;
-        this->objects[selectedObj]
       }
     }
   }
