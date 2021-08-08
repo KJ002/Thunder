@@ -1,20 +1,45 @@
 #pragma once
 
 #include <chrono>
+#include <cmath>
 #include <cstddef>
 #include <vector>
-
-class PhysicsEnvironment;
-class PhysicsBodyRec;
 
 struct Vec2{
   double x;
   double y;
+
+  Vec2(double x, double y)
+    : x(x), y(y) {}
+
+  Vec2 operator+(const Vec2& other) const{
+    return Vec2(x+other.x, y+other.y);
+  }
+
+  Vec2 operator-(const Vec2& other) const{
+    return Vec2(x-other.x, y-other.y);
+  }
+
+  Vec2 operator*(const Vec2& other) const{
+    return Vec2(x*other.x, y*other.y);
+  }
+
+  Vec2 operator/(const Vec2& other) const{
+    return Vec2(x/other.x, y/other.y);
+  }
 };
 
-struct Vec3 : public Vec2{
-  double z;
-};
+std::vector<unsigned int> range(unsigned int, unsigned int);
+
+Vec2 max(Vec2, float);
+Vec2 min(Vec2, float);
+
+float length(Vec2 v) { return std::sqrt(v.x * v.x + v.y * v.y); }
+
+float signedDstToBox(Vec2, Vec2, Vec2);
+
+class PhysicsEnvironment;
+class PhysicsBodyRec;
 
 struct time_point{
   std::chrono::time_point<std::chrono::system_clock> time;
