@@ -1,5 +1,6 @@
 #include "thunder.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <iterator>
 #include <vector>
@@ -17,24 +18,52 @@ std::vector<unsigned int> range(unsigned int start, unsigned int end){
   return result;
 }
 
+float signedDstToBox(Vec2 p, Vec2 centre, Vec2 size){
+  Vec2 offset = abs(p-centre) - size;
+
+  float unsignedDist = length(max(offset, 0.f));
+  float dstInsideBox = min(std::max(offset.x, offset.y), 0.f);
+
+  return unsignedDist + dstInsideBox;
+}
+
+Vec2 max(Vec2 z, Vec2 w){
+  if (z > w)
+    return z;
+  return w;
+}
+
+Vec2 max(Vec2 z, float w) { return max(z, (Vec2){w, w}); }
+
+float min(float z, float w){
+  if (z < w)
+    return z;
+  return w;
+}
+
+Vec2 min(Vec2 z, Vec2 w){
+  if (z < w)
+    return z;
+  return w;
+}
+
+Vec2 min(Vec2 z, float w) { return min(z, (Vec2){w, w}); }
+
+Vec2 abs(Vec2 v) { return (Vec2){std::abs(v.x), std::abs(v.y)}; }
+
+float length(Vec2 v) { return std::sqrt(v.x * v.x + v.y * v.y); }
+
 /* PhysicsBodyRec */
 
 PhysicsBodyRec::PhysicsBodyRec(PhysicsEnvironment* env, Vec2 dimentions, Vec2 position, Vec2 velocity,
                                double mass, double rotation, double angularVelocity){
 
-  this->dimentions = dimentions;
+  //this->dimentions = dimentions;
   this->position = position;
   this->velocity = velocity;
   this->mass = mass;
   this->rotation = rotation;
   this->angularVelocity = angularVelocity;
-
-  // Calculate Vertices
-
-  this->vertices[0] = (Vec2){position.x-(dimentions.x/2), position.y-(dimentions.y/2)};
-  this->vertices[1] = (Vec2){position.x+(dimentions.x/2), position.y-(dimentions.y/2)};
-  this->vertices[2] = (Vec2){position.x+(dimentions.x/2), position.y+(dimentions.y/2)};
-  this->vertices[3] = (Vec2){position.x-(dimentions.x/2), position.y+(dimentions.y/2)};
 
   env->objects.push_back(this);
 }
@@ -51,13 +80,6 @@ void PhysicsBodyRec::update(){
 
   this->lastUpdate.time = time_now();
   this->lastUpdate.isSet = true;
-
-  // Calculate Vertices
-
-  this->vertices[0] = (Vec2){position.x-(dimentions.x/2), position.y-(dimentions.y/2)};
-  this->vertices[1] = (Vec2){position.x+(dimentions.x/2), position.y-(dimentions.y/2)};
-  this->vertices[2] = (Vec2){position.x+(dimentions.x/2), position.y+(dimentions.y/2)};
-  this->vertices[3] = (Vec2){position.x-(dimentions.x/2), position.y+(dimentions.y/2)};
 
 }
 
@@ -93,51 +115,6 @@ void PhysicsEnvironment::setup(){
   }
 }
 
-void PhysicsEnvironment::checkCollisions(){
-  for (int selectedObj = 0; selectedObj < this->objects.size(); selectedObj++){
-    this->objects[selectedObj]->isColliding = false;
-    std::vector<PhysicsBodyRec*> collidingObjects;
-
-    for (int selectedVert = 0; selectedVert < 4; selectedVert++){
-
-      int intersections = 0;
-      Vec2 selected = this->objects[selectedObj]->vertices[selectedVert];
-
-      for (int comparisonObj = 0; comparisonObj < this->objects.size()-1; comparisonObj++){
-
-        bool possibleCollisionIsSet = false;
-
-        int correctComparisonObj;
-
-        (comparisonObj == selectedObj)
-          ? correctComparisonObj = (comparisonObj+1)%this->objects.size()
-          : correctComparisonObj = comparisonObj;
-
-        for (int comparisonVert = 0; comparisonVert < 4; comparisonVert++){
-
-          Vec2 comparison[2] = {this->objects[correctComparisonObj]->vertices[comparisonVert],
-          this->objects[correctComparisonObj]->vertices[(comparisonVert+1)%4]};
-
-          if (((selected.x > comparison[0].x && selected.x < comparison[1].x) ||
-               (selected.x < comparison[0].x && selected.x > comparison[1].x) &&
-              (selected.y < comparison[0].y && selected.y < comparison[1].y))
-          ){
-            intersections++;
-
-            if (!possibleCollisionIsSet){
-              possibleCollisionIsSet = true;
-              collidingObjects.push_back(this->objects[correctComparisonObj]);
-            }
-
-          }
-        }
-      }
-
-      if (intersections%2){
-        this->objects[selectedObj]->isColliding = true;
-      }
-
-      std::cout << intersections << std::endl;
-    }
-  }
+void PhysicsEnvironment::checkCollisions() {
+  std::cout << signedDstToBox(this->objects[0]->position, this->objects[1]->position, (Vec2){10, 10}) << std::endl;
 }
