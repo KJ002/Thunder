@@ -9,32 +9,44 @@ struct Vec2{
   double x;
   double y;
 
-  Vec2(double x, double y)
-    : x(x), y(y) {}
-
   Vec2 operator+(const Vec2& other) const{
-    return Vec2(x+other.x, y+other.y);
+    return (Vec2){x+other.x, y+other.y};
   }
 
   Vec2 operator-(const Vec2& other) const{
-    return Vec2(x-other.x, y-other.y);
+    return (Vec2){x-other.x, y-other.y};
   }
 
   Vec2 operator*(const Vec2& other) const{
-    return Vec2(x*other.x, y*other.y);
+    return (Vec2){x*other.x, y*other.y};
   }
 
   Vec2 operator/(const Vec2& other) const{
-    return Vec2(x/other.x, y/other.y);
+    return (Vec2){x/other.x, y/other.y};
+  }
+
+  bool operator>(const Vec2& other) const{
+    if ((x*y) > (other.x*other.y))
+      return true;
+    return false;
+  }
+
+  bool operator<(const Vec2& other) const{
+    return !operator>(other);
   }
 };
 
 std::vector<unsigned int> range(unsigned int, unsigned int);
 
 Vec2 max(Vec2, float);
+Vec2 max(Vec2, Vec2);
+float min(float, float);
 Vec2 min(Vec2, float);
+Vec2 min(Vec2, Vec2);
 
-float length(Vec2 v) { return std::sqrt(v.x * v.x + v.y * v.y); }
+Vec2 abs(Vec2);
+
+float length(Vec2 v);
 
 float signedDstToBox(Vec2, Vec2, Vec2);
 
@@ -54,13 +66,12 @@ public:
 
   /* Member Variables Passed On Construction */
 
-  Vec2 dimentions;
+  //Vec2 dimentions;
   Vec2 position;
   Vec2 velocity;
   double mass;
   double rotation;
   double angularVelocity;
-  Vec2 vertices[4];
 
   /* Member Variabes Passed By Environment */
 
