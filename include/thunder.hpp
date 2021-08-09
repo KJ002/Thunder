@@ -34,6 +34,14 @@ struct Vec2{
   bool operator<(const Vec2& other) const{
     return !operator>(other);
   }
+
+  double dotProduct(const Vec2& other) const{
+    return x*other.x+y*other.y;
+  }
+
+  double crossProduct(const Vec2& other) const{
+    return x+other.x*y+other.y;
+  }
 };
 
 std::vector<unsigned int> range(unsigned int, unsigned int);
@@ -55,6 +63,8 @@ struct time_point{
   std::chrono::time_point<std::chrono::system_clock> time;
   bool isSet = false;
 };
+
+bool shapeOverlap_SAT(PhysicsBodyRec &r1, PhysicsBodyRec &r2);
 
 class PhysicsBodyRec{
 public:
@@ -83,7 +93,7 @@ public:
   /* Member Variables Due to Construction Members */
 
   std::vector<Vec2> points;       // Points of Rectangle Relative to Center
-  std::vector<Vec2> envPoint;     // Points of Rectangle Relative to Env
+  std::vector<Vec2> envPoints;     // Points of Rectangle Relative to Env
 
   PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2, Vec2, double, double, double);
   void update();
