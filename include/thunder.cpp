@@ -156,5 +156,19 @@ void PhysicsEnvironment::setup(){
 }
 
 void PhysicsEnvironment::checkCollisions() {
-  log(shapeOverlap_SAT(*this->objects[0], *this->objects[1]));
+  for (int obj : range(0, this->objects.size())){
+
+    this->objects[obj]->collidingObjects.clear();
+    this->objects[obj]->isColliding = false;
+
+    for (int comp : range(0, this->objects.size()-1)){
+      if (obj == comp)
+        comp = (comp+1)%this->objects.size();
+
+      if (shapeOverlap_SAT(*this->objects[obj], *this->objects[comp])){
+        this->objects[obj]->collidingObjects.push_back(this->objects[comp]);
+        this->objects[obj]->isColliding = true;
+      }
+    }
+  }
 }
