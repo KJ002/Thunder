@@ -48,8 +48,6 @@ Vec2 abs(Vec2);
 
 float length(Vec2 v);
 
-float signedDstToBox(Vec2, Vec2, Vec2);
-
 class PhysicsEnvironment;
 class PhysicsBodyRec;
 
@@ -60,24 +58,32 @@ struct time_point{
 
 class PhysicsBodyRec{
 public:
+
+  /* Member Variables Updated Due to Env */
+
   time_point lastUpdate;
   std::vector<PhysicsBodyRec*> collidingObjects;
   bool isColliding;
 
   /* Member Variables Passed On Construction */
 
-  //Vec2 dimentions;
-  Vec2 position;
-  Vec2 velocity;
-  double mass;
-  double rotation;
-  double angularVelocity;
+  Vec2 position;                 // Initial Position of Rectangle
+  Vec2 size;                     // Size of Rectangle
+  Vec2 velocity;                 // Initial Velocity of Rectangle
+  double mass;                   // Mass of Rectangle
+  double rotation;               // Initial Rotation of Rectangle
+  double angularVelocity;        // Initial Angular Velocity of Rectangle
 
   /* Member Variabes Passed By Environment */
 
-  double gravity;
-  double weight;
-  unsigned int pixelMultiplier;
+  double gravity;                 // Gravity applied to Rectangle
+  double weight;                  // Weight of Rectangle
+  unsigned int pixelMultiplier;   // Multiply velocity by this Multiplier
+
+  /* Member Variables Due to Construction Members */
+
+  std::vector<Vec2> points;       // Points of Rectangle Relative to Center
+  std::vector<Vec2> envPoint;     // Points of Rectangle Relative to Env
 
   PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2, Vec2, double, double, double);
   void update();
