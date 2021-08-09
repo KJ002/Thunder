@@ -48,7 +48,6 @@ std::vector<unsigned int> range(unsigned int, unsigned int);
 
 Vec2 max(Vec2, float);
 Vec2 max(Vec2, Vec2);
-float min(float, float);
 Vec2 min(Vec2, float);
 Vec2 min(Vec2, Vec2);
 
@@ -64,7 +63,7 @@ struct time_point{
   bool isSet = false;
 };
 
-bool shapeOverlap_SAT(PhysicsBodyRec &r1, PhysicsBodyRec &r2);
+bool shapeOverlap_SAT(PhysicsBodyRec r1, PhysicsBodyRec r2);
 
 class PhysicsBodyRec{
 public:
