@@ -1,15 +1,25 @@
 #include "raylib.h"
 #include "include/thunder.hpp"
 
+#include <iostream>
+
 int main(){
 
   /* Setup Bodies */
 
-  PhysicsEnvironment env(9.8);
+  PhysicsEnvironment env(0);
 
-  PhysicsBodyRec testPhysicsBody(&env, (Vec2){190, 200}, (Vec2){0, 0}, 10, 0, 0);
-  Rectangle testRenderBody = {(float)testPhysicsBody.position.x, (float)testPhysicsBody.position.y, 20, 20};
+  PhysicsBodyRec playerPhysicsBody(&env, (Vec2){190, 200}, (Vec2){20, 20}, (Vec2){0, 0}, 10, 0, 0);
+  Rectangle playerRenderBody = {(float)playerPhysicsBody.position.x-10,
+                              (float)playerPhysicsBody.position.y-10,
+                              20.f,
+                              20.f};
 
+  PhysicsBodyRec testPhysicsBody(&env, (Vec2){100, 100}, (Vec2){20, 20}, (Vec2){0, 0}, 20, 0, 0);
+  Rectangle testRenderBody = {(float)testPhysicsBody.position.x-10,
+                              (float)testPhysicsBody.position.y-10,
+                              20.f,
+                              20.f};
   env.setup();
 
   /* Window Setup */
@@ -25,21 +35,32 @@ int main(){
 
   while (!WindowShouldClose()){
 
+    if (IsKeyDown(KEY_W)) playerPhysicsBody.position.y -= 2;
+    if (IsKeyDown(KEY_A)) playerPhysicsBody.position.x -= 2;
+    if (IsKeyDown(KEY_S)) playerPhysicsBody.position.y += 2;
+    if (IsKeyDown(KEY_D)) playerPhysicsBody.position.x += 2;
+
+
     /* Update Physics Environment  */
 
     env.update();
+    env.checkCollisions();
 
     /* Update Render Body With Physics Body */
 
-    testRenderBody.x = (float)testPhysicsBody.position.x;
-    testRenderBody.y = (float)testPhysicsBody.position.y;
+    playerRenderBody.x = (float)playerPhysicsBody.position.x;
+    playerRenderBody.y = (float)playerPhysicsBody.position.y;
 
     /* Draw Render Object */
 
     BeginDrawing();
         ClearBackground(RAYWHITE);
-        DrawRectanglePro((Rectangle){(float)testPhysicsBody.position.x, (float)testPhysicsBody.position.y, 20, 20},
-                         (Vector2){10, 10}, testPhysicsBody.rotation, BLUE);
+        DrawRectanglePro(playerRenderBody,
+                         (Vector2){10, 10},
+                         playerPhysicsBody.rotation,
+                         BLUE);
+
+        DrawRectangleRec(testRenderBody, RED);
     EndDrawing();
   }
 
