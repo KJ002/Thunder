@@ -18,15 +18,6 @@ std::vector<unsigned int> range(unsigned int start, unsigned int end){
   return result;
 }
 
-float signedDstToBox(Vec2 p, Vec2 centre, Vec2 size){
-  Vec2 offset = abs(p-centre) - size;
-
-  float unsignedDist = length(max(offset, 0.f));
-  float dstInsideBox = min(std::max(offset.x, offset.y), 0.f);
-
-  return unsignedDist + dstInsideBox;
-}
-
 Vec2 max(Vec2 z, Vec2 w){
   if (z > w)
     return z;
@@ -55,20 +46,26 @@ float length(Vec2 v) { return std::sqrt(v.x * v.x + v.y * v.y); }
 
 /* PhysicsBodyRec */
 
-PhysicsBodyRec::PhysicsBodyRec(PhysicsEnvironment* env, Vec2 dimentions, Vec2 position, Vec2 velocity,
+PhysicsBodyRec::PhysicsBodyRec(PhysicsEnvironment* env, Vec2 position, Vec2 size, Vec2 velocity,
                                double mass, double rotation, double angularVelocity){
 
-  //this->dimentions = dimentions;
+  this->size = size;
   this->position = position;
   this->velocity = velocity;
   this->mass = mass;
   this->rotation = rotation;
   this->angularVelocity = angularVelocity;
 
+  this->points[0] = (Vec2){-size.x/2, size.y/2};
+  this->points[1] = (Vec2){size.x/2, size.y/2};
+  this->points[2] = (Vec2){size.x/2, -size.y/2};
+  this->points[3] = (Vec2){-size.x/2, -size.y/2};
+
   env->objects.push_back(this);
 }
 
 void PhysicsBodyRec::update(){
+
   if (lastUpdate.isSet){
     std::chrono::duration<double> dur = time_now() - this->lastUpdate.time;
 
@@ -80,6 +77,9 @@ void PhysicsBodyRec::update(){
 
   this->lastUpdate.time = time_now();
   this->lastUpdate.isSet = true;
+
+  for (auto i : range(0, 3))
+    this->envPoint[i] = this->position + this->points[i];
 
 }
 
@@ -116,5 +116,5 @@ void PhysicsEnvironment::setup(){
 }
 
 void PhysicsEnvironment::checkCollisions() {
-  std::cout << signedDstToBox(this->objects[0]->position, this->objects[1]->position, (Vec2){10, 10}) << std::endl;
+
 }
