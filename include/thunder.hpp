@@ -5,6 +5,9 @@
 #include <cstddef>
 #include <vector>
 
+double radToDeg(double);
+double degToRad(double);
+
 struct Vec2{
   double x;
   double y;
