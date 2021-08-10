@@ -56,6 +56,7 @@ struct Vec2{
     Vec2 newPoint = *this - origin;
 
     return newPoint.rotate(th);
+  }
 };
 
 std::vector<unsigned int> range(unsigned int, unsigned int);
