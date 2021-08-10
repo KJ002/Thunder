@@ -42,6 +42,20 @@ struct Vec2{
   double crossProduct(const Vec2& other) const{
     return x+other.x*y+other.y;
   }
+
+  Vec2 rotate(const double th) const{
+    Vec2 result;
+
+    result.x = cos(th) * this->x - sin(th) * this->y;
+    result.y = sin(th) * this->x + sin(th) * this->y;
+
+    return result;
+  }
+
+  Vec2 rotate(const double th, const Vec2& origin) const{
+    Vec2 newPoint = *this - origin;
+
+    return newPoint.rotate(th);
 };
 
 std::vector<unsigned int> range(unsigned int, unsigned int);
