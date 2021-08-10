@@ -3,13 +3,18 @@
 #include <algorithm>
 #include <cmath>
 #include <iterator>
+#include <math.h>
 #include <vector>
 #include <chrono>
 #include <iostream>
 
 #define time_now std::chrono::system_clock::now
+#define PI 2*acos(0.0)
 
 #define log(x) std::cout << x << std::endl
+
+double radToDeg(double rad) { return rad / (PI / 180); }
+double degToRad(double deg) { return deg * (PI / 180); }
 
 std::vector<unsigned int> range(unsigned int start, unsigned int end){
   std::vector<unsigned int> result;
@@ -117,6 +122,9 @@ void PhysicsBodyRec::update(){
 
   this->lastUpdate.time = time_now();
   this->lastUpdate.isSet = true;
+
+  for (int i = 0; i < 4 && rotation; i++)
+    this->points[i].rotate(rotation);
 
   for (auto i : range(0, 4))
     this->envPoints[i] = this->position + this->points[i];
