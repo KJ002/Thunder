@@ -7,9 +7,9 @@ int main(){
 
   /* Setup Bodies */
 
-  PhysicsEnvironment env(0);
+  PhysicsEnvironment env(0, 10);
 
-  PhysicsBodyRec playerPhysicsBody(&env, (Vec2){190, 200}, (Vec2){20, 20}, (Vec2){0, 0}, 10, 45, 0);
+  PhysicsBodyRec playerPhysicsBody(&env, (Vec2){190, 200}, (Vec2){20, 20}, (Vec2){0, 0}, 10, 0, 100);
   Rectangle playerRenderBody = {(float)playerPhysicsBody.position.x-10,
                               (float)playerPhysicsBody.position.y-10,
                               20.f,
@@ -57,7 +57,7 @@ int main(){
         ClearBackground(RAYWHITE);
         DrawRectanglePro(playerRenderBody,
                          (Vector2){10, 10},
-                         radToDeg(playerPhysicsBody.rotation),
+                         playerPhysicsBody.rotation,
                          BLUE);
 
         DrawRectangleRec(testRenderBody, RED);
