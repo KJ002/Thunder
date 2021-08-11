@@ -105,17 +105,18 @@ public:
 
   double gravity;                 // Gravity applied to Rectangle
   double weight;                  // Weight of Rectangle
-  unsigned int pixelMultiplier;   // Multiply velocity by this Multiplier
-  Vec2 friction;                  // All friction applied to the body from environment
+  unsigned int motionMultiplier;   // Multiply velocity by this Multiplier
+  Vec2 linearFriction;            // Directional linear friction
+  float rotationalFriction;      // Rotational friction.
 
   /* Member Variables Due to Construction Members */
 
   std::vector<Vec2> points;       // Points of Rectangle Relative to Center
-  std::vector<Vec2> envPoints;     // Points of Rectangle Relative to Env
+  std::vector<Vec2> envPoints;    // Points of Rectangle Relative to Env
 
   PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2, Vec2, double, double, double);
   void update();
-  void update(double, double, unsigned int, Vec2);
+  void update(double, double, unsigned int, Vec2, float);
   void applyEnergy(Vec2);
 };
 
@@ -123,7 +124,7 @@ class PhysicsEnvironment{
 public:
   float gravity;
   float friction;
-  unsigned int pixelMultiplier = 10;
+  unsigned int motionMultiplier = 10;
 
   std::vector<PhysicsBodyRec*> objects;
 

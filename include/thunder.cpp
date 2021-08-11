@@ -112,30 +112,58 @@ PhysicsBodyRec::PhysicsBodyRec(PhysicsEnvironment* env, Vec2 position, Vec2 size
 void PhysicsBodyRec::update(){
 
   if (lastUpdate.isSet){
+    // Calculate delta time of object.
+
     std::chrono::duration<double> dur = time_now() - this->lastUpdate.time;
 
-    this->position.x += (this->velocity.x*this->pixelMultiplier) * dur.count();
-    this->position.y += (this->velocity.y + this->gravity) * this->pixelMultiplier * dur.count();
+    // Adjust velocity due to friction.
+
+    if (this->linearFriction.x)
+      this->velocity.x += ((this->velocity.x < 0) ?
+                           this->linearFriction.x :
+                           -this->linearFriction.x) * dur.count();
+
+    if (this->linearFriction.y)
+      this->velocity.y += ((this->velocity.y < 0) ?
+                           this->linearFriction.y :
+                           -this->linearFriction.y) * dur.count();
+
+    if (this->rotationalFriction)
+      this->angularVelocity += ((this->angularVelocity < 0) ?
+                                this->rotationalFriction :
+                                -this->rotationalFriction) * dur.count();
+
+    // Update position based on velocity and time.
+
+    this->position.x += (this->velocity.x*this->motionMultiplier) * dur.count();
+    this->position.y += (this->velocity.y + this->gravity) * this->motionMultiplier * dur.count();
 
     this->rotation += this->angularVelocity * dur.count();
   }
 
+  // Update delta time.
+
   this->lastUpdate.time = time_now();
   this->lastUpdate.isSet = true;
 
+  // Update position of point relative to centre.
+
   for (int i = 0; i < 4 && rotation; i++)
     this->points[i].rotate(rotation);
+
+  // Update global position of vertices.
 
   for (auto i : range(0, 4))
     this->envPoints[i] = this->position + this->points[i];
 
 }
 
-void PhysicsBodyRec::update(double gravity, double weight, unsigned int pixelMultiplyer, Vec2 friction){
+void PhysicsBodyRec::update(double gravity, double weight, unsigned int motionMultiplyer, Vec2 linearFriction, float rotationalFriction){
   this->gravity = gravity;
   this->weight = weight;
-  this->pixelMultiplier = pixelMultiplyer;
-  this->friction = friction;
+  this->motionMultiplier = motionMultiplyer;
+  this->linearFriction = linearFriction;
+  this->rotationalFriction = rotationalFriction;
 }
 
 void PhysicsBodyRec::applyEnergy(Vec2 force){
@@ -163,7 +191,7 @@ void PhysicsEnvironment::setup(){
   for (auto i : this->objects){
     double weight = i->mass * this->gravity;
 
-    i->update(this->gravity, weight, this->pixelMultiplier, extrapolateFriction);
+    i->update(this->gravity, weight, this->motionMultiplier, extrapolateFriction, friction);
   }
 }
 
