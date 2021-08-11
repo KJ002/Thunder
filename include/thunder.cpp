@@ -131,10 +131,11 @@ void PhysicsBodyRec::update(){
 
 }
 
-void PhysicsBodyRec::update(double gravity, double weight, unsigned int pixelMultiplyer){
+void PhysicsBodyRec::update(double gravity, double weight, unsigned int pixelMultiplyer, Vec2 friction){
   this->gravity = gravity;
   this->weight = weight;
   this->pixelMultiplier = pixelMultiplyer;
+  this->friction = friction;
 }
 
 void PhysicsBodyRec::applyEnergy(Vec2 force){
@@ -146,8 +147,9 @@ void PhysicsBodyRec::applyEnergy(Vec2 force){
 
 /* PhysicsEnvironment */
 
-PhysicsEnvironment::PhysicsEnvironment(float gravity){
+PhysicsEnvironment::PhysicsEnvironment(float gravity, float friction){
   this->gravity = gravity;
+  this->friction = friction;
 }
 
 void PhysicsEnvironment::update(){
@@ -156,10 +158,12 @@ void PhysicsEnvironment::update(){
 }
 
 void PhysicsEnvironment::setup(){
+  Vec2 extrapolateFriction = {this->friction, this->friction};
+
   for (auto i : this->objects){
     double weight = i->mass * this->gravity;
 
-    i->update(this->gravity, weight, this->pixelMultiplier);
+    i->update(this->gravity, weight, this->pixelMultiplier, extrapolateFriction);
   }
 }
 
