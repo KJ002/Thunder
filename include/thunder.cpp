@@ -201,7 +201,7 @@ void PhysicsEnvironment::checkCollisions() {
     this->objects[obj]->collidingObjects.clear();
     this->objects[obj]->isColliding = false;
 
-    for (int comp : range(0, this->objects.size()-1)){
+    for (int comp : range(0, this->objects.size())){
       if (obj == comp)
         comp = (comp+1)%this->objects.size();
 
