@@ -190,12 +190,11 @@ void PhysicsEnvironment::checkCollisions() {
     this->objects[obj]->collidingObjects.clear();
     this->objects[obj]->isColliding = false;
 
-    for (int comp : range(0, this->objects.size()-1)){
-      if (obj == comp)
-        comp = (comp+1)%this->objects.size();
+    for (int comp : range(1, this->objects.size())){
+      int fixedComp = (obj+comp)%this->objects.size();
 
-      if (shapeOverlap_SAT(*this->objects[obj], *this->objects[comp])){
-        this->objects[obj]->collidingObjects.push_back(this->objects[comp]);
+      if (shapeOverlap_SAT(*this->objects[obj], *this->objects[fixedComp])){
+        this->objects[obj]->collidingObjects.push_back(this->objects[fixedComp]);
         this->objects[obj]->isColliding = true;
       }
     }
