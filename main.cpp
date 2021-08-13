@@ -20,7 +20,6 @@ int main(){
                               (float)testPhysicsBody.position.y-10,
                               20.f,
                               20.f};
-  env.setup();
 
   /* Window Setup */
 
