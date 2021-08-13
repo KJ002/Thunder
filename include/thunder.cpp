@@ -106,6 +106,13 @@ PhysicsBodyRec::PhysicsBodyRec(PhysicsEnvironment* env, Vec2 position, Vec2 size
   this->points[2] = (Vec2){this->size.x/2, -this->size.y/2};
   this->points[3] = (Vec2){-this->size.x/2, -this->size.y/2};
 
+  this->gravity = env->gravity;
+  this->weight = this->mass * this->gravity;
+  this->motionMultiplier = env->motionMultiplier;
+  this->linearFriction = (Vec2){env->friction, env->friction};
+  this->rotationalFriction = env->friction;
+
+
   env->objects.push_back(this);
 }
 
@@ -158,14 +165,6 @@ void PhysicsBodyRec::update(){
 
 }
 
-void PhysicsBodyRec::update(double gravity, double weight, unsigned int motionMultiplyer, Vec2 linearFriction, float rotationalFriction){
-  this->gravity = gravity;
-  this->weight = weight;
-  this->motionMultiplier = motionMultiplyer;
-  this->linearFriction = linearFriction;
-  this->rotationalFriction = rotationalFriction;
-}
-
 void PhysicsBodyRec::applyEnergy(Vec2 force){
   Vec2 result = {std::sqrt((force.x*2)/this->mass), std::sqrt((force.y*2)/this->mass)};
 
@@ -183,16 +182,6 @@ PhysicsEnvironment::PhysicsEnvironment(float gravity, float friction){
 void PhysicsEnvironment::update(){
   for (auto i : this->objects)
     i->update();
-}
-
-void PhysicsEnvironment::setup(){
-  Vec2 extrapolateFriction = {this->friction, this->friction};
-
-  for (auto i : this->objects){
-    double weight = i->mass * this->gravity;
-
-    i->update(this->gravity, weight, this->motionMultiplier, extrapolateFriction, friction);
-  }
 }
 
 void PhysicsEnvironment::checkCollisions() {

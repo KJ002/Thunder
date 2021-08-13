@@ -116,7 +116,6 @@ public:
 
   PhysicsBodyRec(PhysicsEnvironment*, Vec2, Vec2, Vec2, double, double, double);
   void update();
-  void update(double, double, unsigned int, Vec2, float);
   void applyEnergy(Vec2);
 };
 
@@ -129,7 +128,6 @@ public:
   std::vector<PhysicsBodyRec*> objects;
 
   PhysicsEnvironment(float, float);
-  void setup();
   void update();
   void checkCollisions();
 };
